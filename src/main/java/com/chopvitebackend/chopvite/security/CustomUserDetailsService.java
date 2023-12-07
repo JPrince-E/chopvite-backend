@@ -1,6 +1,7 @@
 package com.chopvitebackend.chopvite.security;
 
-import com.chopvitebackend.chopvite.entity.Role;
+import com.chopvitebackend.chopvite.dto.UserContext;
+import com.chopvitebackend.chopvite.enums.Role;
 import com.chopvitebackend.chopvite.entity.UserEntity;
 import com.chopvitebackend.chopvite.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Collections;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -28,11 +28,15 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Username not found"));
-        return new User(user.getEmail(), user.getPassword(), mapRolesToAuthorities(user.getRoles()));
+        Role userRole = UserContext.getUserRole();
+
+        UserEntity user = userRepository.findByEmailAndRole(email, userRole)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+
+        return new User(user.getEmail(), user.getPassword(), mapRolesToAuthorities(userRole));
     }
 
-    private Collection<GrantedAuthority> mapRolesToAuthorities(List<Role> roles) {
-        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
+    private Collection<GrantedAuthority> mapRolesToAuthorities(Role role) {
+        return Collections.singletonList(new SimpleGrantedAuthority(role.name()));
     }
 }

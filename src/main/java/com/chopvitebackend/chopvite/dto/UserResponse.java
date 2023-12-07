@@ -1,5 +1,6 @@
 package com.chopvitebackend.chopvite.dto;
 
+import com.chopvitebackend.chopvite.enums.Role;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -7,11 +8,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserResponse {
 
+    private int id;
+
     private String email;
 
-    private String roles;
+    private String password;
 
-    private String roleName;
+    private Role role;
 
     private String firstName;
 
@@ -40,4 +43,5 @@ public class UserResponse {
     private String typeOfBusiness;
 
     private String identity;
+
 }

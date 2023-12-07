@@ -1,8 +1,6 @@
 package com.chopvitebackend.chopvite.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
@@ -26,8 +24,7 @@ public class JwtProvider {
                 .setExpiration(expireDate)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
-        System.out.println("New token: ");
-        System.out.println(token);
+        System.out.println("New token: " + token);
 
         return token;
     }
